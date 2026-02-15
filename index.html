@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tug of War: POO Java Básico (Carrera)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    .game-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 2em;
+      margin-bottom: 5px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: 1fr 420px 1fr;
+      gap: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* PANEL JUGADOR 1 */
+    .player-panel {
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      border-right: 3px solid #667eea;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .player-panel.p2 {
+      background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+      border-right: none;
+      border-left: 3px solid #667eea;
+    }
+
+    .player-header {
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+      font-size: 1.3em;
+    }
+
+    .player-header.p1 { color: #1976d2; }
+    .player-header.p2 { color: #c2185b; }
+
+    .score-display {
+      background: white;
+      padding: 12px;
+      border-radius: 50px;
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .score-display.p1 { color: #1976d2; }
+    .score-display.p2 { color: #c2185b; }
+
+    .question-box {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    .question-title {
+      font-size: 0.85em;
+      color: #666;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .question-text {
+      font-size: 1.1em;
+      color: #333;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .code-block {
+      background: #f5f5f5;
+      border-left: 4px solid #667eea;
+      padding: 10px;
+      margin: 10px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      border-radius: 5px;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-btn {
+      padding: 12px;
+      background: #f8f9fa;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .option-btn:hover {
+      background: #e8e8ff;
+      border-color: #667eea;
+      transform: translateX(5px);
+    }
+
+    .option-btn:disabled { cursor: not-allowed; opacity: 0.6; }
+
+    .feedback {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9em;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.correct {
+      background: #d4edda; color: #155724; border: 2px solid #28a745;
+    }
+    .feedback.incorrect {
+      background: #f8d7da; color: #721c24; border: 2px solid #f5c6cb;
+    }
+
+    .correct-answer {
+      margin-top: 8px;
+      padding: 8px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 5px;
+      font-size: 0.85em;
+    }
+
+    /* CENTRO - CARRERA */
+    .rope-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(180deg, #e3f2fd 0%, #fff 50%, #fce4ec 100%);
+      padding: 20px;
+      gap: 18px;
+      position: relative;
+    }
+
+    .score-info {
+      width: 100%;
+      background: white;
+      padding: 14px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      font-weight: bold;
+      font-size: 1.05em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .score-info span {
+      padding: 6px 14px;
+      border-radius: 50px;
+      background: #f0f0f0;
+      white-space: nowrap;
+    }
+
+    .score-info .p1-score { background: #e3f2fd; color: #1976d2; }
+    .score-info .p2-score { background: #fce4ec; color: #c2185b; }
+
+    .race-title {
+      font-weight: 800;
+      color: #4b4b4b;
+      letter-spacing: 0.2px;
+      text-align: center;
+    }
+
+    .race-subtitle {
+      font-size: 0.95em;
+      color: #666;
+      text-align: center;
+      margin-top: -8px;
+    }
+
+    .track {
+      width: 100%;
+      max-width: 380px;
+      height: 260px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #9be7ff 0%, #d7ffda 100%);
+      box-shadow: 0 6px 22px rgba(0,0,0,0.14);
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(102,126,234,0.25);
+    }
+
+    .platform {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      width: 86%;
+      height: 92px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #62d26f 0%, #30b050 100%);
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,0.25);
+    }
+
+    .lane-line {
+      position: absolute;
+      top: 50%;
+      left: 7%;
+      right: 7%;
+      height: 4px;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.55);
+      border-radius: 10px;
+    }
+
+    .start-line, .finish-line {
+      position: absolute;
+      top: 52%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 74px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.8);
+    }
+
+    .start-line { left: 8%; }
+    .finish-line {
+      right: 8%;
+      width: 22px;
+      background:
+        linear-gradient(90deg,
+          #fff 0 25%, #ff4d4d 25% 50%,
+          #fff 50% 75%, #ff4d4d 75% 100%);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+    }
+
+    .step-dots {
+      position: absolute;
+      top: 52%;
+      left: 10%;
+      right: 10%;
+      height: 0;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      transform: translateY(-40px);
+    }
+
+    .runner {
+      position: absolute;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+      transition: left 0.45s ease;
+      user-select: none;
+    }
+
+    .runner.p1 {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      border: 2px solid rgba(25,118,210,0.25);
+      top: calc(52% - 24px);
+    }
+
+    .runner.p2 {
+      background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+      border: 2px solid rgba(194,24,91,0.25);
+      top: calc(52% + 24px);
+    }
+
+    .runner.jump {
+      animation: jump 0.45s ease;
+    }
+
+    @keyframes jump {
+      0%   { transform: translate(-50%, -50%) scale(1); }
+      50%  { transform: translate(-50%, -78%) scale(1.06); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .progress-card {
+      width: 100%;
+      max-width: 380px;
+      background: white;
+      padding: 12px 14px;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 700;
+      color: #444;
+    }
+
+    .pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #f2f2f2;
+      font-size: 0.95em;
+      white-space: nowrap;
+    }
+
+    .pill.p1 { background: #e3f2fd; color: #1976d2; }
+    .pill.p2 { background: #fce4ec; color: #c2185b; }
+
+    /* MODAL FINAL */
+    .game-over {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .game-over-content {
+      background: white;
+      padding: 50px;
+      border-radius: 25px;
+      text-align: center;
+      max-width: 600px;
+      animation: slideIn 0.5s ease;
+    }
+
+    .end-emoji { font-size: 5em; margin-bottom: 20px; }
+    .winner-text { font-size: 2.5em; margin-bottom: 20px; font-weight: bold; color: #667eea; }
+    .final-score { font-size: 1.8em; margin: 20px 0; color: #333; }
+    .end-message { font-size: 1.2em; color: #666; margin: 20px 0; }
+
+    .btn-restart {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px 50px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      cursor: pointer;
+      font-weight: 700;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-restart:hover {
+      transform: scale(1.08);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    @keyframes slideIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #999; }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="header">
+      <h1>🎮 TUG OF WAR: POO JAVA BÁSICO 🎮</h1>
+      <p style="font-size: 0.9em; opacity: 0.9;">Constructores • Listas • Arreglos • Get/Set</p>
+    </div>
+
+    <div class="game-board">
+      <!-- PANEL JUGADOR 1 -->
+      <div class="player-panel">
+        <div class="player-header p1">🐰 JUGADOR 1</div>
+        <div class="score-display p1" id="score1">0 Puntos</div>
+        <div id="content1"></div>
+      </div>
+
+      <!-- CENTRO - CARRERA -->
+      <div class="rope-center">
+        <div class="score-info">
+          <span class="p1-score" id="p1-info">P1: 0</span>
+          <span id="current-q">Ronda: 1/20</span>
+          <span class="p2-score" id="p2-info">P2: 0</span>
+        </div>
+
+        <div class="race-title">Balap Karung Matematika (versión POO)</div>
+        <div class="race-subtitle">✅ Respuesta correcta = 1 salto • 🏁 10 saltos para ganar</div>
+
+        <div class="track" aria-label="pista de carrera">
+          <div class="platform"></div>
+          <div class="lane-line"></div>
+
+          <div class="start-line" title="Salida"></div>
+          <div class="finish-line" title="Meta"></div>
+
+          <div class="step-dots" id="step-dots"></div>
+
+          <div class="runner p1" id="runner1" title="Jugador 1">🧑‍🎓</div>
+          <div class="runner p2" id="runner2" title="Jugador 2">🧑‍🎓</div>
+        </div>
+
+        <div class="progress-card">
+          <div class="pill p1" id="p1-steps">P1 saltos: 0/10</div>
+          <div class="pill" id="tie-info">Competencia en curso</div>
+          <div class="pill p2" id="p2-steps">P2 saltos: 0/10</div>
+        </div>
+      </div>
+
+      <!-- PANEL JUGADOR 2 -->
+      <div class="player-panel p2">
+        <div class="player-header p2">🐰 JUGADOR 2</div>
+        <div class="score-display p2" id="score2">0 Puntos</div>
+        <div id="content2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FINAL -->
+  <div class="game-over" id="gameOver">
+    <div class="game-over-content">
+      <div class="end-emoji" id="end-emoji">🏆</div>
+      <div class="winner-text" id="winner-text"></div>
+      <div class="final-score" id="final-score"></div>
+      <div class="end-message" id="end-message"></div>
+      <button class="btn-restart" onclick="location.reload()">🔄 Jugar de Nuevo</button>
+    </div>
+  </div>
+
+  <script>
+    // 20 PREGUNTAS DE POO BÁSICO
+    const questions = [
+      {
+        question: "¿Cuál es la función principal de un constructor vacío?",
+        options: ["Destruir objetos", "Inicializar un objeto sin parámetros", "Crear métodos", "Eliminar atributos"],
+        correct: 1,
+        explanation: "El constructor vacío crea instancias del objeto sin necesidad de parámetros iniciales."
+      },
+      {
+        question: "¿Cuántos constructores puede tener una clase?",
+        code: "public class Persona {\n    public Persona() { }\n    public Persona(String nombre) { }\n}",
+        options: ["Solo uno", "Máximo dos", "Múltiples", "Depende del compilador"],
+        correct: 2,
+        explanation: "Una clase puede tener múltiples constructores con diferentes parámetros (sobrecarga)."
+      },
+      {
+        question: "¿Qué palabra clave se usa para crear una instancia?",
+        options: ["create", "new", "instantiate", "make"],
+        correct: 1,
+        explanation: "La palabra clave 'new' asigna memoria y ejecuta el constructor."
+      },
+      {
+        question: "¿Cuál es la forma correcta de declarar un arreglo de enteros?",
+        options: ["int arr", "int[] arr = new int[10]", "int arr[] = 10", "array int arr"],
+        correct: 1,
+        explanation: "La sintaxis correcta es: tipo[] nombre = new tipo[tamaño];"
+      },
+      {
+        question: "¿Cuántos elementos puede almacenar un arreglo declarado como int[] numeros = new int[5]?",
+        options: ["3 elementos", "5 elementos", "10 elementos", "Cantidad ilimitada"],
+        correct: 1,
+        explanation: "Un arreglo declarado con size 5 almacena exactamente 5 elementos con índices 0-4."
+      },
+      {
+        question: "¿Cuál es el propósito del método getter?",
+        options: ["Crear atributos", "Obtener el valor de un atributo", "Eliminar objetos", "Modificar la clase"],
+        correct: 1,
+        explanation: "Los getters permiten acceder a los valores de atributos privados."
+      },
+      {
+        question: "¿Cuál es el propósito del método setter?",
+        options: ["Obtener valores", "Modificar el valor de un atributo", "Crear instancias", "Eliminar atributos"],
+        correct: 1,
+        explanation: "Los setters permiten modificar los valores de atributos privados."
+      },
+      {
+        question: "¿Cómo se accede al primer elemento de un arreglo?",
+        code: "int[] numeros = {10, 20, 30};",
+        options: ["numeros[1]", "numeros[0]", "numeros.first()", "numeros.get(0)"],
+        correct: 1,
+        explanation: "Los arreglos comienzan con índice 0, por lo que el primer elemento es numeros[0]."
+      },
+      {
+        question: "¿Cuál es la diferencia entre un arreglo y ArrayList?",
+        options: ["No hay diferencia", "El arreglo tiene tamaño fijo, ArrayList es dinámico", "Los arreglos son más rápidos", "ArrayList tiene métodos"],
+        correct: 1,
+        explanation: "Los arreglos [] tienen tamaño definido, ArrayList crece dinámicamente."
+      },
+      {
+        question: "¿Qué valor por defecto tiene un elemento int en un arreglo?",
+        code: "int[] arr = new int[5];",
+        options: ["null", "undefined", "0", "1"],
+        correct: 2,
+        explanation: "Los enteros en arreglos se inicializan automáticamente a 0."
+      },
+      {
+        question: "¿Cuántos parámetros puede recibir un constructor?",
+        code: "public Persona(String nombre, int edad) { }",
+        options: ["Ninguno", "Solo uno", "Múltiples", "Máximo 3"],
+        correct: 2,
+        explanation: "Los constructores pueden recibir ninguno, uno o múltiples parámetros."
+      },
+      {
+        question: "¿Cómo se inicializa un arreglo con valores?",
+        options: ["int[] arr = new int[]{1,2,3}", "int[] arr = {1,2,3}", "int[] arr = [1,2,3]", "Las opciones 1 y 2 son correctas"],
+        correct: 3,
+        explanation: "Ambas sintaxis son válidas: new int[]{} o simplemente {}."
+      },
+      {
+        question: "¿Cuál es el último índice válido en int[] arr = new int[10]?",
+        options: ["9", "10", "8", "0"],
+        correct: 0,
+        explanation: "Con tamaño 10, los índices válidos son 0-9, entonces el último es 9."
+      },
+      {
+        question: "¿Qué sucede al acceder a un índice fuera de rango en un arreglo?",
+        options: ["Devuelve null", "Genera ArrayIndexOutOfBoundsException", "Devuelve 0", "Amplía el arreglo"],
+        correct: 1,
+        explanation: "Acceder fuera del rango lanza una excepción de índice fuera de rango."
+      },
+      {
+        question: "¿Cómo se obtiene la longitud de un arreglo?",
+        code: "int[] numeros = new int[7];",
+        options: ["numeros.size()", "numeros.length()", "numeros.length", "numeros.getSize()"],
+        correct: 2,
+        explanation: "La propiedad length devuelve el tamaño del arreglo: arr.length"
+      },
+      {
+        question: "¿Qué encapsulación se logra con private y public?",
+        options: ["Crear herencia", "Proteger datos y controlar acceso", "Eliminar métodos", "Simplificar código"],
+        correct: 1,
+        explanation: "private y public controlan qué atributos/métodos son accesibles desde fuera."
+      },
+      {
+        question: "¿Cuál es la sintaxis para un arreglo de Strings?",
+        options: ["String[] nombres = new String[5]", "String names[] = new String[5]", "Both are correct", "array String[]"],
+        correct: 2,
+        explanation: "Ambas sintaxis son válidas: String[] o String[]."
+      },
+      {
+        question: "¿Qué retorna un getter de un atributo int?",
+        code: "public int getEdad() { return edad; }",
+        options: ["void", "boolean", "int", "String"],
+        correct: 2,
+        explanation: "El getter retorna el tipo del atributo, en este caso int."
+      },
+      {
+        question: "¿Cómo se asigna un valor a un elemento de arreglo?",
+        code: "int[] numeros = new int[3];",
+        options: ["numeros.set(0, 5)", "numeros[0] = 5", "numeros.put(0, 5)", "numeros(0, 5)"],
+        correct: 1,
+        explanation: "Se usa la sintaxis numeros[índice] = valor para asignar."
+      },
+      {
+        question: "¿Qué es una instancia de una clase?",
+        options: ["Un blueprint", "Un objeto creado con new", "Un método", "Un atributo"],
+        correct: 1,
+        explanation: "Una instancia es un objeto específico creado a partir de una clase."
+      }
+    ];
+
+    // CONFIG CARRERA
+    const STEPS_TO_WIN = 10; // como el ejemplo del centro
+    const TRACK_LEFT = 10;   // % (zona util)
+    const TRACK_RIGHT = 90;  // % (zona util)
+
+    // VARIABLES GLOBALES
+    let gameState = {
+      p1Score: 0,
+      p2Score: 0,
+      currentRound: 0,
+      p1Answered: false,
+      p2Answered: false,
+      p1QuestionIndex: null,
+      p2QuestionIndex: null,
+      usedQuestions: [],
+      ended: false
+    };
+
+    // DIBUJAR MARCAS (10 pasos)
+    function initStepDots() {
+      const dots = document.getElementById("step-dots");
+      dots.innerHTML = "";
+      for (let i = 0; i <= STEPS_TO_WIN; i++) {
+        const d = document.createElement("div");
+        d.className = "step-dot";
+        dots.appendChild(d);
+      }
+    }
+
+    // MAPEAR SCORE -> POSICION EN PISTA
+    function scoreToLeftPercent(score) {
+      const s = Math.max(0, Math.min(STEPS_TO_WIN, score));
+      const ratio = s / STEPS_TO_WIN; // 0..1
+      return TRACK_LEFT + (TRACK_RIGHT - TRACK_LEFT) * ratio;
+    }
+
+    function updateRunners() {
+      const r1 = document.getElementById("runner1");
+      const r2 = document.getElementById("runner2");
+
+      r1.style.left = scoreToLeftPercent(gameState.p1Score) + "%";
+      r2.style.left = scoreToLeftPercent(gameState.p2Score) + "%";
+
+      document.getElementById("p1-steps").textContent = `P1 saltos: ${Math.min(gameState.p1Score, STEPS_TO_WIN)}/${STEPS_TO_WIN}`;
+      document.getElementById("p2-steps").textContent = `P2 saltos: ${Math.min(gameState.p2Score, STEPS_TO_WIN)}/${STEPS_TO_WIN}`;
+
+      const tieInfo = document.getElementById("tie-info");
+      if (gameState.p1Score > gameState.p2Score) tieInfo.textContent = "Va ganando P1";
+      else if (gameState.p2Score > gameState.p1Score) tieInfo.textContent = "Va ganando P2";
+      else tieInfo.textContent = "Empate técnico";
+    }
+
+    function animateJump(player) {
+      const el = document.getElementById(player === 1 ? "runner1" : "runner2");
+      el.classList.remove("jump");
+      void el.offsetWidth; // reflow
+      el.classList.add("jump");
+    }
+
+    // CARGAR PREGUNTA
+    function loadQuestion() {
+      if (gameState.ended) return;
+
+      // Si alguien ya llegó a 10, terminar YA
+      if (gameState.p1Score >= STEPS_TO_WIN || gameState.p2Score >= STEPS_TO_WIN) {
+        endGame(true);
+        return;
+      }
+
+      if (gameState.currentRound >= questions.length) {
+        endGame(false);
+        return;
+      }
+
+      gameState.p1Answered = false;
+      gameState.p2Answered = false;
+
+      // Seleccionar preguntas diferentes para cada jugador
+      let q1Index, q2Index;
+
+      do {
+        q1Index = Math.floor(Math.random() * questions.length);
+      } while (gameState.usedQuestions.includes(q1Index) && gameState.usedQuestions.length < questions.length);
+
+      do {
+        q2Index = Math.floor(Math.random() * questions.length);
+      } while (
+        q2Index === q1Index ||
+        (gameState.usedQuestions.includes(q2Index) && gameState.usedQuestions.length < questions.length)
+      );
+
+      gameState.p1QuestionIndex = q1Index;
+      gameState.p2QuestionIndex = q2Index;
+      gameState.usedQuestions.push(q1Index, q2Index);
+
+      loadPlayerQuestion(1, q1Index);
+      loadPlayerQuestion(2, q2Index);
+
+      document.getElementById("current-q").textContent = `Ronda: ${gameState.currentRound + 1}/20`;
+    }
+
+    function loadPlayerQuestion(player, questionIndex) {
+      const q = questions[questionIndex];
+      const panel = document.getElementById(`content${player}`);
+
+      let html = `
+        <div class="question-box">
+          <div class="question-title">Pregunta ${gameState.currentRound + 1}</div>
+          <div class="question-text">${q.question}</div>
+          ${q.code ? `<div class="code-block"><pre>${q.code}</pre></div>` : ""}
+          <div class="options" id="options${player}">
+      `;
+
+      q.options.forEach((option, index) => {
+        html += `
+          <button class="option-btn" onclick="selectOption(${player}, ${index})" id="btn-${player}-${index}">
+            ${option}
+          </button>
+        `;
+      });
+
+      html += `
+          </div>
+          <div class="feedback" id="feedback${player}"></div>
+        </div>
+      `;
+
+      panel.innerHTML = html;
+    }
+
+    // SELECCIONAR OPCIÓN
+    function selectOption(player, index) {
+      if (gameState.ended) return;
+      if (player === 1 && gameState.p1Answered) return;
+      if (player === 2 && gameState.p2Answered) return;
+
+      const questionIndex = player === 1 ? gameState.p1QuestionIndex : gameState.p2QuestionIndex;
+      const q = questions[questionIndex];
+      const feedback = document.getElementById(`feedback${player}`);
+      const buttons = document.querySelectorAll(`#options${player} .option-btn`);
+
+      buttons.forEach(btn => (btn.disabled = true));
+
+      if (player === 1) gameState.p1Answered = true;
+      else gameState.p2Answered = true;
+
+      if (index === q.correct) {
+        // CORRECTO => AVANZA 1 SALTO
+        if (player === 1) gameState.p1Score++;
+        else gameState.p2Score++;
+
+        document.getElementById("score" + player).textContent =
+          (player === 1 ? gameState.p1Score : gameState.p2Score) + " Puntos";
+        document.getElementById("p1-info").textContent = "P1: " + gameState.p1Score;
+        document.getElementById("p2-info").textContent = "P2: " + gameState.p2Score;
+
+        buttons[index].style.background = "#28a745";
+        buttons[index].style.color = "white";
+        feedback.classList.add("show", "correct");
+        feedback.textContent = "✅ ¡Correcto! " + q.explanation;
+
+        animateJump(player);
+        updateRunners();
+
+        // Si llega a 10, terminar
+        if (gameState.p1Score >= STEPS_TO_WIN || gameState.p2Score >= STEPS_TO_WIN) {
+          setTimeout(() => endGame(true), 700);
+          return;
+        }
+      } else {
+        // INCORRECTO
+        buttons[index].style.background = "#f5c6cb";
+        buttons[index].style.color = "#721c24";
+        buttons[q.correct].style.background = "#28a745";
+        buttons[q.correct].style.color = "white";
+
+        feedback.classList.add("show", "incorrect");
+        feedback.innerHTML = `❌ Incorrecto.<br><div class="correct-answer">Respuesta: ${q.options[q.correct]}<br><br>${q.explanation}</div>`;
+      }
+
+      // Si ambos respondieron, siguiente ronda
+      if (gameState.p1Answered && gameState.p2Answered) {
+        setTimeout(() => {
+          gameState.currentRound++;
+          loadQuestion();
+        }, 2500);
+      }
+    }
+
+    // FINALIZAR JUEGO
+    function endGame(byRaceWin) {
+      if (gameState.ended) return;
+      gameState.ended = true;
+
+      const gameOver = document.getElementById("gameOver");
+      const winnerText = document.getElementById("winner-text");
+      const finalScore = document.getElementById("final-score");
+      const endMessage = document.getElementById("end-message");
+
+      let emoji = "🏆";
+      let winner = "";
+
+      if (gameState.p1Score > gameState.p2Score) {
+        winner = "🧑‍🎓 ¡JUGADOR 1 GANA! 🧑‍🎓";
+        emoji = "🎉";
+      } else if (gameState.p2Score > gameState.p1Score) {
+        winner = "🧑‍🎓 ¡JUGADOR 2 GANA! 🧑‍🎓";
+        emoji = "🎉";
+      } else {
+        winner = "🤝 ¡EMPATE! 🤝";
+        emoji = "⚖️";
+      }
+
+      document.getElementById("end-emoji").textContent = emoji;
+      winnerText.textContent = winner;
+      finalScore.textContent = `${gameState.p1Score} - ${gameState.p2Score}`;
+
+      if (byRaceWin) {
+        endMessage.textContent = "🏁 ¡Meta alcanzada! El primero en llegar a 10 saltos gana.";
+      } else {
+        endMessage.textContent = "¡Excelente trabajo! Ambos jugadores han demostrado dominio en POO Básico.";
+      }
+
+      gameOver.style.display = "flex";
+    }
+
+    // INICIAR
+    window.onload = () => {
+      initStepDots();
+      updateRunners(); // ponerlos en salida
+      loadQuestion();
+    };
+  </script>
+</body>
+</html>
