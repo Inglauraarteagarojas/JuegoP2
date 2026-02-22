@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tug of War: POO Java Básico (Carrera)</title>
+  <title>Tug of War: Arreglos & POO Java</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -48,7 +48,6 @@
       overflow: hidden;
     }
 
-    /* PANEL JUGADOR 1 */
     .player-panel {
       display: flex;
       flex-direction: column;
@@ -173,7 +172,6 @@
       font-size: 0.85em;
     }
 
-    /* CENTRO - CARRERA */
     .rope-center {
       display: flex;
       flex-direction: column;
@@ -361,7 +359,6 @@
     .pill.p1 { background: #e3f2fd; color: #1976d2; }
     .pill.p2 { background: #fce4ec; color: #c2185b; }
 
-    /* MODAL FINAL */
     .game-over {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -418,8 +415,8 @@
 <body>
   <div class="game-container">
     <div class="header">
-      <h1>🎮 TUG OF WAR: POO JAVA BÁSICO 🎮</h1>
-      <p style="font-size: 0.9em; opacity: 0.9;">Constructores • Listas • Arreglos • Get/Set</p>
+      <h1>🎮 TUG OF WAR: ARREGLOS & POO JAVA 🎮</h1>
+      <p style="font-size: 0.9em; opacity: 0.9;">Arreglos 1D/2D • Constructores • Get/Set • new • Funciones de Valor</p>
     </div>
 
     <div class="game-board">
@@ -438,20 +435,17 @@
           <span class="p2-score" id="p2-info">P2: 0</span>
         </div>
 
-        <div class="race-title">Balap Karung Matematika (versión POO)</div>
+        <div class="race-title">🏁 Carrera de Programación Java</div>
         <div class="race-subtitle">✅ Respuesta correcta = 1 salto • 🏁 10 saltos para ganar</div>
 
         <div class="track" aria-label="pista de carrera">
           <div class="platform"></div>
           <div class="lane-line"></div>
-
           <div class="start-line" title="Salida"></div>
           <div class="finish-line" title="Meta"></div>
-
           <div class="step-dots" id="step-dots"></div>
-
-          <div class="runner p1" id="runner1" title="Jugador 1">🧑‍🎓</div>
-          <div class="runner p2" id="runner2" title="Jugador 2">🧑‍🎓</div>
+          <div class="runner p1" id="runner1" title="Jugador 1">🧑‍💻</div>
+          <div class="runner p2" id="runner2" title="Jugador 2">🧑‍💻</div>
         </div>
 
         <div class="progress-card">
@@ -482,143 +476,200 @@
   </div>
 
   <script>
-    // 20 PREGUNTAS DE POO BÁSICO
+    // 20 PREGUNTAS: Arreglos 1D/2D, Constructores con parámetros, Get/Set, new, Funciones de valor
     const questions = [
+      // ---- ARREGLOS UNIDIMENSIONALES ----
       {
-        question: "¿Cuál es la función principal de un constructor vacío?",
-        options: ["Destruir objetos", "Inicializar un objeto sin parámetros", "Crear métodos", "Eliminar atributos"],
+        question: "¿Cuál es la sintaxis correcta para declarar e instanciar un arreglo unidimensional de 5 enteros en Java?",
+        options: [
+          "int arr[5];",
+          "int[] arr = new int[5];",
+          "int arr = new int(5);",
+          "array int arr = 5;"
+        ],
         correct: 1,
-        explanation: "El constructor vacío crea instancias del objeto sin necesidad de parámetros iniciales."
+        explanation: "La sintaxis correcta es: int[] arr = new int[5]; Se usa 'new' para instanciar el arreglo con un tamaño fijo."
       },
       {
-        question: "¿Cuántos constructores puede tener una clase?",
-        code: "public class Persona {\n    public Persona() { }\n    public Persona(String nombre) { }\n}",
-        options: ["Solo uno", "Máximo dos", "Múltiples", "Depende del compilador"],
+        question: "¿Cuál es el índice del primer elemento de un arreglo en Java?",
+        code: "int[] numeros = {10, 20, 30, 40, 50};",
+        options: ["numeros[1]", "numeros[0]", "numeros.first()", "numeros[-1]"],
+        correct: 1,
+        explanation: "En Java los arreglos inician en índice 0. El primer elemento es numeros[0], que vale 10."
+      },
+      {
+        question: "¿Cómo se obtiene la cantidad de elementos de un arreglo llamado 'datos'?",
+        options: ["datos.size()", "datos.length()", "datos.length", "datos.count()"],
         correct: 2,
-        explanation: "Una clase puede tener múltiples constructores con diferentes parámetros (sobrecarga)."
+        explanation: "La propiedad 'length' (sin paréntesis) devuelve el tamaño de un arreglo: datos.length"
       },
       {
-        question: "¿Qué palabra clave se usa para crear una instancia?",
-        options: ["create", "new", "instantiate", "make"],
-        correct: 1,
-        explanation: "La palabra clave 'new' asigna memoria y ejecuta el constructor."
-      },
-      {
-        question: "¿Cuál es la forma correcta de declarar un arreglo de enteros?",
-        options: ["int arr", "int[] arr = new int[10]", "int arr[] = 10", "array int arr"],
-        correct: 1,
-        explanation: "La sintaxis correcta es: tipo[] nombre = new tipo[tamaño];"
-      },
-      {
-        question: "¿Cuántos elementos puede almacenar un arreglo declarado como int[] numeros = new int[5]?",
-        options: ["3 elementos", "5 elementos", "10 elementos", "Cantidad ilimitada"],
-        correct: 1,
-        explanation: "Un arreglo declarado con size 5 almacena exactamente 5 elementos con índices 0-4."
-      },
-      {
-        question: "¿Cuál es el propósito del método getter?",
-        options: ["Crear atributos", "Obtener el valor de un atributo", "Eliminar objetos", "Modificar la clase"],
-        correct: 1,
-        explanation: "Los getters permiten acceder a los valores de atributos privados."
-      },
-      {
-        question: "¿Cuál es el propósito del método setter?",
-        options: ["Obtener valores", "Modificar el valor de un atributo", "Crear instancias", "Eliminar atributos"],
-        correct: 1,
-        explanation: "Los setters permiten modificar los valores de atributos privados."
-      },
-      {
-        question: "¿Cómo se accede al primer elemento de un arreglo?",
-        code: "int[] numeros = {10, 20, 30};",
-        options: ["numeros[1]", "numeros[0]", "numeros.first()", "numeros.get(0)"],
-        correct: 1,
-        explanation: "Los arreglos comienzan con índice 0, por lo que el primer elemento es numeros[0]."
-      },
-      {
-        question: "¿Cuál es la diferencia entre un arreglo y ArrayList?",
-        options: ["No hay diferencia", "El arreglo tiene tamaño fijo, ArrayList es dinámico", "Los arreglos son más rápidos", "ArrayList tiene métodos"],
-        correct: 1,
-        explanation: "Los arreglos [] tienen tamaño definido, ArrayList crece dinámicamente."
-      },
-      {
-        question: "¿Qué valor por defecto tiene un elemento int en un arreglo?",
-        code: "int[] arr = new int[5];",
-        options: ["null", "undefined", "0", "1"],
+        question: "¿Qué valor tienen por defecto los elementos de un arreglo int[] recién creado con 'new'?",
+        code: "int[] arr = new int[4];",
+        options: ["null", "1", "0", "undefined"],
         correct: 2,
-        explanation: "Los enteros en arreglos se inicializan automáticamente a 0."
+        explanation: "Al crear un arreglo de enteros con 'new', todos sus elementos se inicializan automáticamente en 0."
       },
       {
-        question: "¿Cuántos parámetros puede recibir un constructor?",
-        code: "public Persona(String nombre, int edad) { }",
-        options: ["Ninguno", "Solo uno", "Múltiples", "Máximo 3"],
-        correct: 2,
-        explanation: "Los constructores pueden recibir ninguno, uno o múltiples parámetros."
-      },
-      {
-        question: "¿Cómo se inicializa un arreglo con valores?",
-        options: ["int[] arr = new int[]{1,2,3}", "int[] arr = {1,2,3}", "int[] arr = [1,2,3]", "Las opciones 1 y 2 son correctas"],
-        correct: 3,
-        explanation: "Ambas sintaxis son válidas: new int[]{} o simplemente {}."
-      },
-      {
-        question: "¿Cuál es el último índice válido en int[] arr = new int[10]?",
-        options: ["9", "10", "8", "0"],
-        correct: 0,
-        explanation: "Con tamaño 10, los índices válidos son 0-9, entonces el último es 9."
-      },
-      {
-        question: "¿Qué sucede al acceder a un índice fuera de rango en un arreglo?",
-        options: ["Devuelve null", "Genera ArrayIndexOutOfBoundsException", "Devuelve 0", "Amplía el arreglo"],
+        question: "¿Cuál es el índice del ÚLTIMO elemento de: int[] arr = new int[6]?",
+        options: ["6", "5", "7", "4"],
         correct: 1,
-        explanation: "Acceder fuera del rango lanza una excepción de índice fuera de rango."
+        explanation: "Un arreglo de tamaño 6 tiene índices del 0 al 5. El último elemento es arr[5]."
       },
       {
-        question: "¿Cómo se obtiene la longitud de un arreglo?",
-        code: "int[] numeros = new int[7];",
-        options: ["numeros.size()", "numeros.length()", "numeros.length", "numeros.getSize()"],
+        question: "¿Cómo se asigna el valor 99 al tercer elemento de un arreglo llamado 'notas'?",
+        code: "int[] notas = new int[5];",
+        options: ["notas.set(2, 99)", "notas[3] = 99", "notas[2] = 99", "notas.put(2, 99)"],
         correct: 2,
-        explanation: "La propiedad length devuelve el tamaño del arreglo: arr.length"
+        explanation: "El tercer elemento está en índice 2 (0-basado). La sintaxis es notas[2] = 99;"
       },
       {
-        question: "¿Qué encapsulación se logra con private y public?",
-        options: ["Crear herencia", "Proteger datos y controlar acceso", "Eliminar métodos", "Simplificar código"],
+        question: "¿Cuál es el resultado de ejecutar este código?",
+        code: "int[] arr = {5, 10, 15};\nSystem.out.println(arr[1]);",
+        options: ["5", "10", "15", "Error en tiempo de ejecución"],
         correct: 1,
-        explanation: "private y public controlan qué atributos/métodos son accesibles desde fuera."
+        explanation: "arr[0]=5, arr[1]=10, arr[2]=15. Al imprimir arr[1] se muestra 10."
+      },
+
+      // ---- ARREGLOS BIDIMENSIONALES ----
+      {
+        question: "¿Cuál es la forma correcta de declarar una matriz (arreglo bidimensional) de 3 filas y 4 columnas?",
+        options: [
+          "int matriz = new int[3][4];",
+          "int[][] matriz = new int[3][4];",
+          "int[3][4] matriz;",
+          "int matriz[][] = int[3,4];"
+        ],
+        correct: 1,
+        explanation: "La sintaxis correcta para una matriz en Java es: int[][] matriz = new int[filas][columnas];"
       },
       {
-        question: "¿Cuál es la sintaxis para un arreglo de Strings?",
-        options: ["String[] nombres = new String[5]", "String names[] = new String[5]", "Both are correct", "array String[]"],
+        question: "¿Cómo se accede al elemento en la fila 1, columna 2 de una matriz llamada 'tabla'?",
+        options: ["tabla[2][1]", "tabla(1,2)", "tabla[1][2]", "tabla.get(1,2)"],
         correct: 2,
-        explanation: "Ambas sintaxis son válidas: String[] o String[]."
+        explanation: "Para acceder a un elemento en arreglos 2D se usa: tabla[fila][columna], es decir tabla[1][2]."
       },
       {
-        question: "¿Qué retorna un getter de un atributo int?",
-        code: "public int getEdad() { return edad; }",
-        options: ["void", "boolean", "int", "String"],
+        question: "¿Cuántos elementos en total tiene la siguiente matriz?",
+        code: "int[][] m = new int[3][3];",
+        options: ["3", "6", "9", "12"],
         correct: 2,
-        explanation: "El getter retorna el tipo del atributo, en este caso int."
+        explanation: "Una matriz de 3x3 tiene 3*3 = 9 elementos en total."
       },
       {
-        question: "¿Cómo se asigna un valor a un elemento de arreglo?",
-        code: "int[] numeros = new int[3];",
-        options: ["numeros.set(0, 5)", "numeros[0] = 5", "numeros.put(0, 5)", "numeros(0, 5)"],
+        question: "¿Cuál es el valor por defecto de cada celda en una matriz double[][] recién creada?",
+        code: "double[][] datos = new double[4][4];",
+        options: ["null", "1.0", "0.0", "NaN"],
+        correct: 2,
+        explanation: "Las matrices de tipo double se inicializan con 0.0 al crearlas con 'new'."
+      },
+
+      // ---- CONSTRUCTOR CON PARÁMETROS ----
+      {
+        question: "¿Cuál es la declaración correcta de un constructor con parámetros para la clase 'Alumno'?",
+        code: "public class Alumno {\n    String nombre;\n    int edad;\n}",
+        options: [
+          "void Alumno(String n, int e) { }",
+          "public Alumno(String n, int e) { nombre = n; edad = e; }",
+          "Alumno constructor(String n, int e) { }",
+          "public void Constructor(String n, int e) { }"
+        ],
         correct: 1,
-        explanation: "Se usa la sintaxis numeros[índice] = valor para asignar."
+        explanation: "Un constructor con parámetros tiene el mismo nombre que la clase, sin tipo de retorno, y recibe los valores para inicializar atributos."
       },
       {
-        question: "¿Qué es una instancia de una clase?",
-        options: ["Un blueprint", "Un objeto creado con new", "Un método", "Un atributo"],
+        question: "¿Qué hace la palabra clave 'new' al llamar un constructor con parámetros?",
+        code: "Alumno a = new Alumno(\"Carlos\", 20);",
+        options: [
+          "Solo reserva memoria",
+          "Solo llama al constructor",
+          "Reserva memoria Y ejecuta el constructor con los parámetros dados",
+          "Crea una copia del objeto"
+        ],
+        correct: 2,
+        explanation: "'new' hace dos cosas: asigna memoria en el heap para el nuevo objeto y luego ejecuta el constructor con los argumentos proporcionados."
+      },
+      {
+        question: "¿Qué ocurre si una clase tiene constructor con parámetros y se intenta usar 'new Clase()' sin argumentos?",
+        code: "public class Producto {\n    public Producto(String nombre) { }\n}",
+        options: [
+          "Se crea el objeto con valores por defecto",
+          "Error de compilación: no existe constructor vacío",
+          "Se crea el objeto con null",
+          "Java usa el constructor más cercano"
+        ],
         correct: 1,
-        explanation: "Una instancia es un objeto específico creado a partir de una clase."
+        explanation: "Si solo defines un constructor con parámetros, Java elimina el constructor vacío por defecto. Llamar new Producto() genera error de compilación."
+      },
+
+      // ---- MÉTODOS GET Y SET ----
+      {
+        question: "¿Cuál es la sintaxis correcta de un método GET para el atributo 'private int edad'?",
+        options: [
+          "void getEdad() { return edad; }",
+          "public int getEdad() { return edad; }",
+          "public getEdad() { return edad; }",
+          "int get() { return edad; }"
+        ],
+        correct: 1,
+        explanation: "Un getter es public, retorna el mismo tipo del atributo y su nombre comienza con 'get' seguido del atributo en CamelCase."
+      },
+      {
+        question: "¿Cuál es la sintaxis correcta de un método SET para 'private String nombre'?",
+        options: [
+          "public String setNombre(String n) { nombre = n; }",
+          "void setNombre() { }",
+          "public void setNombre(String n) { nombre = n; }",
+          "public setNombre(String n) { this.nombre = n; }"
+        ],
+        correct: 2,
+        explanation: "Un setter es public, retorna void, recibe el nuevo valor como parámetro y lo asigna al atributo privado."
+      },
+      {
+        question: "¿Para qué sirve declarar los atributos como 'private' si luego se crean getters y setters?",
+        options: [
+          "No tiene sentido, mejor declararlo public",
+          "Para encapsular: controlar y validar el acceso a los datos desde fuera de la clase",
+          "Solo es por convención visual",
+          "Para que los constructores funcionen"
+        ],
+        correct: 1,
+        explanation: "La encapsulación protege los datos internos. El setter puede incluir validaciones antes de asignar, lo que no es posible con atributos públicos directos."
+      },
+
+      // ---- FUNCIONES DE VALOR (return) ----
+      {
+        question: "¿Qué retorna el siguiente método?",
+        code: "public int suma(int a, int b) {\n    return a + b;\n}",
+        options: ["void", "Un String con la suma", "Un entero con la suma de a y b", "boolean"],
+        correct: 2,
+        explanation: "El método declara 'int' como tipo de retorno y devuelve 'a + b', que es la suma entera de los dos parámetros."
+      },
+      {
+        question: "¿Cuál es la diferencia entre un método void y una función de valor en Java?",
+        options: [
+          "No hay diferencia",
+          "void no devuelve nada; una función de valor usa 'return' para devolver un resultado",
+          "void es más rápido",
+          "Solo void puede tener parámetros"
+        ],
+        correct: 1,
+        explanation: "Los métodos void realizan acciones sin devolver resultado. Las funciones de valor tienen un tipo de retorno (int, String, etc.) y usan 'return' para entregar el resultado."
+      },
+      {
+        question: "¿Qué imprime el siguiente código?",
+        code: "public int cuadrado(int n) {\n    return n * n;\n}\n// En main:\nSystem.out.println(cuadrado(4));",
+        options: ["4", "8", "16", "Error"],
+        correct: 2,
+        explanation: "El método cuadrado(4) calcula 4 * 4 = 16 y lo devuelve. System.out.println imprime 16."
       }
     ];
 
     // CONFIG CARRERA
-    const STEPS_TO_WIN = 10; // como el ejemplo del centro
-    const TRACK_LEFT = 10;   // % (zona util)
-    const TRACK_RIGHT = 90;  // % (zona util)
+    const STEPS_TO_WIN = 10;
+    const TRACK_LEFT = 10;
+    const TRACK_RIGHT = 90;
 
-    // VARIABLES GLOBALES
     let gameState = {
       p1Score: 0,
       p2Score: 0,
@@ -631,7 +682,6 @@
       ended: false
     };
 
-    // DIBUJAR MARCAS (10 pasos)
     function initStepDots() {
       const dots = document.getElementById("step-dots");
       dots.innerHTML = "";
@@ -642,23 +692,19 @@
       }
     }
 
-    // MAPEAR SCORE -> POSICION EN PISTA
     function scoreToLeftPercent(score) {
       const s = Math.max(0, Math.min(STEPS_TO_WIN, score));
-      const ratio = s / STEPS_TO_WIN; // 0..1
+      const ratio = s / STEPS_TO_WIN;
       return TRACK_LEFT + (TRACK_RIGHT - TRACK_LEFT) * ratio;
     }
 
     function updateRunners() {
       const r1 = document.getElementById("runner1");
       const r2 = document.getElementById("runner2");
-
       r1.style.left = scoreToLeftPercent(gameState.p1Score) + "%";
       r2.style.left = scoreToLeftPercent(gameState.p2Score) + "%";
-
       document.getElementById("p1-steps").textContent = `P1 saltos: ${Math.min(gameState.p1Score, STEPS_TO_WIN)}/${STEPS_TO_WIN}`;
       document.getElementById("p2-steps").textContent = `P2 saltos: ${Math.min(gameState.p2Score, STEPS_TO_WIN)}/${STEPS_TO_WIN}`;
-
       const tieInfo = document.getElementById("tie-info");
       if (gameState.p1Score > gameState.p2Score) tieInfo.textContent = "Va ganando P1";
       else if (gameState.p2Score > gameState.p1Score) tieInfo.textContent = "Va ganando P2";
@@ -668,35 +714,27 @@
     function animateJump(player) {
       const el = document.getElementById(player === 1 ? "runner1" : "runner2");
       el.classList.remove("jump");
-      void el.offsetWidth; // reflow
+      void el.offsetWidth;
       el.classList.add("jump");
     }
 
-    // CARGAR PREGUNTA
     function loadQuestion() {
       if (gameState.ended) return;
-
-      // Si alguien ya llegó a 10, terminar YA
       if (gameState.p1Score >= STEPS_TO_WIN || gameState.p2Score >= STEPS_TO_WIN) {
         endGame(true);
         return;
       }
-
       if (gameState.currentRound >= questions.length) {
         endGame(false);
         return;
       }
-
       gameState.p1Answered = false;
       gameState.p2Answered = false;
 
-      // Seleccionar preguntas diferentes para cada jugador
       let q1Index, q2Index;
-
       do {
         q1Index = Math.floor(Math.random() * questions.length);
       } while (gameState.usedQuestions.includes(q1Index) && gameState.usedQuestions.length < questions.length);
-
       do {
         q2Index = Math.floor(Math.random() * questions.length);
       } while (
@@ -710,14 +748,12 @@
 
       loadPlayerQuestion(1, q1Index);
       loadPlayerQuestion(2, q2Index);
-
-      document.getElementById("current-q").textContent = `Ronda: ${gameState.currentRound + 1}/20`;
+      document.getElementById("current-q").textContent = `Ronda: ${gameState.currentRound + 1}/10`;
     }
 
     function loadPlayerQuestion(player, questionIndex) {
       const q = questions[questionIndex];
       const panel = document.getElementById(`content${player}`);
-
       let html = `
         <div class="question-box">
           <div class="question-title">Pregunta ${gameState.currentRound + 1}</div>
@@ -725,7 +761,6 @@
           ${q.code ? `<div class="code-block"><pre>${q.code}</pre></div>` : ""}
           <div class="options" id="options${player}">
       `;
-
       q.options.forEach((option, index) => {
         html += `
           <button class="option-btn" onclick="selectOption(${player}, ${index})" id="btn-${player}-${index}">
@@ -733,17 +768,14 @@
           </button>
         `;
       });
-
       html += `
           </div>
           <div class="feedback" id="feedback${player}"></div>
         </div>
       `;
-
       panel.innerHTML = html;
     }
 
-    // SELECCIONAR OPCIÓN
     function selectOption(player, index) {
       if (gameState.ended) return;
       if (player === 1 && gameState.p1Answered) return;
@@ -753,47 +785,37 @@
       const q = questions[questionIndex];
       const feedback = document.getElementById(`feedback${player}`);
       const buttons = document.querySelectorAll(`#options${player} .option-btn`);
-
       buttons.forEach(btn => (btn.disabled = true));
 
       if (player === 1) gameState.p1Answered = true;
       else gameState.p2Answered = true;
 
       if (index === q.correct) {
-        // CORRECTO => AVANZA 1 SALTO
         if (player === 1) gameState.p1Score++;
         else gameState.p2Score++;
-
         document.getElementById("score" + player).textContent =
           (player === 1 ? gameState.p1Score : gameState.p2Score) + " Puntos";
         document.getElementById("p1-info").textContent = "P1: " + gameState.p1Score;
         document.getElementById("p2-info").textContent = "P2: " + gameState.p2Score;
-
         buttons[index].style.background = "#28a745";
         buttons[index].style.color = "white";
         feedback.classList.add("show", "correct");
         feedback.textContent = "✅ ¡Correcto! " + q.explanation;
-
         animateJump(player);
         updateRunners();
-
-        // Si llega a 10, terminar
         if (gameState.p1Score >= STEPS_TO_WIN || gameState.p2Score >= STEPS_TO_WIN) {
           setTimeout(() => endGame(true), 700);
           return;
         }
       } else {
-        // INCORRECTO
         buttons[index].style.background = "#f5c6cb";
         buttons[index].style.color = "#721c24";
         buttons[q.correct].style.background = "#28a745";
         buttons[q.correct].style.color = "white";
-
         feedback.classList.add("show", "incorrect");
-        feedback.innerHTML = `❌ Incorrecto.<br><div class="correct-answer">Respuesta: ${q.options[q.correct]}<br><br>${q.explanation}</div>`;
+        feedback.innerHTML = `❌ Incorrecto.<br><div class="correct-answer">Respuesta correcta: ${q.options[q.correct]}<br><br>${q.explanation}</div>`;
       }
 
-      // Si ambos respondieron, siguiente ronda
       if (gameState.p1Answered && gameState.p2Answered) {
         setTimeout(() => {
           gameState.currentRound++;
@@ -802,47 +824,39 @@
       }
     }
 
-    // FINALIZAR JUEGO
     function endGame(byRaceWin) {
       if (gameState.ended) return;
       gameState.ended = true;
-
       const gameOver = document.getElementById("gameOver");
       const winnerText = document.getElementById("winner-text");
       const finalScore = document.getElementById("final-score");
       const endMessage = document.getElementById("end-message");
-
       let emoji = "🏆";
       let winner = "";
-
       if (gameState.p1Score > gameState.p2Score) {
-        winner = "🧑‍🎓 ¡JUGADOR 1 GANA! 🧑‍🎓";
+        winner = "🧑‍💻 ¡JUGADOR 1 GANA! 🧑‍💻";
         emoji = "🎉";
       } else if (gameState.p2Score > gameState.p1Score) {
-        winner = "🧑‍🎓 ¡JUGADOR 2 GANA! 🧑‍🎓";
+        winner = "🧑‍💻 ¡JUGADOR 2 GANA! 🧑‍💻";
         emoji = "🎉";
       } else {
         winner = "🤝 ¡EMPATE! 🤝";
         emoji = "⚖️";
       }
-
       document.getElementById("end-emoji").textContent = emoji;
       winnerText.textContent = winner;
       finalScore.textContent = `${gameState.p1Score} - ${gameState.p2Score}`;
-
       if (byRaceWin) {
         endMessage.textContent = "🏁 ¡Meta alcanzada! El primero en llegar a 10 saltos gana.";
       } else {
-        endMessage.textContent = "¡Excelente trabajo! Ambos jugadores han demostrado dominio en POO Básico.";
+        endMessage.textContent = "¡Excelente trabajo! Han demostrado dominio en Arreglos y POO Java.";
       }
-
       gameOver.style.display = "flex";
     }
 
-    // INICIAR
     window.onload = () => {
       initStepDots();
-      updateRunners(); // ponerlos en salida
+      updateRunners();
       loadQuestion();
     };
   </script>
